@@ -9,19 +9,17 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public class AlertRabbit {
 
     public static void main(String[] args) throws ClassNotFoundException {
         String propertiesFile = "rabbit.properties";
-        Map<String, String> properties = getProperties(propertiesFile);
-        String url = properties.get("url");
-        String login = properties.get("username");
-        String password = properties.get("password");
-        String driver = properties.get("driver-class-name");
+        Properties properties = getProperties(propertiesFile);
+        String url = properties.getProperty("url");
+        String login = properties.getProperty("username");
+        String password = properties.getProperty("password");
+        String driver = properties.getProperty("driver-class-name");
         Class.forName(driver);
         try (Connection connect = DriverManager.getConnection(url, login, password)) {
             tryStatementBlock("create table if not exists rabbits(created_date timestamp)",
@@ -33,7 +31,7 @@ public class AlertRabbit {
             JobDetail job = newJob(Rabbit.class).usingJobData(data).build();
             SimpleScheduleBuilder times = simpleSchedule()
                     .withIntervalInSeconds(
-                            Integer.parseInt(properties.get("rabbit.interval")))
+                            Integer.parseInt(properties.getProperty("rabbit.interval")))
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()
@@ -55,16 +53,12 @@ public class AlertRabbit {
         }
     }
 
-    private static Map<String, String> getProperties(String filePath) {
-        Map<String, String> prop = new HashMap<>();
+    private static Properties getProperties(String filePath) {
+        Properties prop = new Properties();
         try (InputStream in = AlertRabbit.class
                 .getClassLoader()
                 .getResourceAsStream(filePath)) {
-            Properties config = new Properties();
-            config.load(in);
-            for (var name : config.stringPropertyNames()) {
-                prop.put(name, config.getProperty(name));
-            }
+            prop.load(in);
         } catch (Exception e) {
             e.printStackTrace();
         }
