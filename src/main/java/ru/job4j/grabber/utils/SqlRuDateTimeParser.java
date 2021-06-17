@@ -53,6 +53,22 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         return outText;
     }
 
+    public Post postDetail(String link) throws Exception {
+        Post post = new Post();
+        Document document = Jsoup.connect(link).get();
+        post.setDescription(document
+                .select("table.msgTable:nth-child(3) > "
+                        + "tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text());
+        post.setName(document.select("#id22298685").text());
+        post.setDate(document
+                .select("table.msgTable:nth-child(3) > tbody:nth-child(1) "
+                        + "> tr:nth-child(3) > td:nth-child(1)").text().substring(0, 15));
+        post.setLink(link);
+        post.setId(1);
+        System.out.println(post.toString());
+        return post;
+    }
+
     public static void main(String[] args) throws Exception {
         SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
         for (int i = 1; i < 6; i++) {
@@ -60,6 +76,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
             System.out.println(page);
             System.out.println(parser.parsePage(page, parser));
         }
-
+        System.out.println(parser
+                .postDetail("https://www.sql.ru/forum/1334597/administrator-baz-dannyh-dba"));
     }
 }
