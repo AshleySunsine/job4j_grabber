@@ -36,18 +36,30 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         return time;
     }
 
-    public static void main(String[] args) throws Exception {
-        Document document = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
+    public List<String> parsePage(String page, SqlRuDateTimeParser parser) throws Exception {
+        List<String> outText = new ArrayList<>();
+        Document document = Jsoup.connect(page).get();
         Elements time = document.select(".forumtable").select("tr");
         Elements row = document.select(".postslisttopic");
-        SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yy, HH:mm");
         for (int i = 0; i < row.size(); i++) {
             Element href = row.get(i).child(0);
             Element t = time.get(i + 1).child(5);
-            System.out.println(href.attr("href"));
-            System.out.println(href.text());
-            System.out.println(parser.parse(t.text()).format(formatter));
+            String construct = href.attr("href") + System.lineSeparator()
+                    + href.text() + System.lineSeparator()
+                    + parser.parse(t.text()).format(formatter);
+            outText.add(construct);
         }
+        return outText;
+    }
+
+    public static void main(String[] args) throws Exception {
+        SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
+        for (int i = 1; i < 6; i++) {
+            String page = String.format("https://www.sql.ru/forum/job-offers/%d", i);
+            System.out.println(page);
+            System.out.println(parser.parsePage(page, parser));
+        }
+
     }
 }
