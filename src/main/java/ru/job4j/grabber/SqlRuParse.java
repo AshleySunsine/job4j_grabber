@@ -52,7 +52,7 @@ public class SqlRuParse implements Parse {
                 Post post = new Post();
                 post.setLink(href.attr("href"));
                 post.setName(href.text());
-                post.setDate(parseDate(time.text())
+                post.setDateCreated(parseDate(time.text())
                         .format(formatter));
                 outPosts.add(post);
             }
@@ -71,7 +71,7 @@ public class SqlRuParse implements Parse {
                     .select("table.msgTable:nth-child(3) > "
                             + "tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text());
             post.setName(document.select(".messageHeader").get(0).text());
-            post.setDate(document
+            post.setDateCreated(document
                     .select("table.msgTable:nth-child(3) > tbody:nth-child(1) "
                             + "> tr:nth-child(3) > td:nth-child(1)").text().substring(0, 15));
             post.setLink(link);

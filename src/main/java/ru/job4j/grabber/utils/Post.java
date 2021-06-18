@@ -5,7 +5,18 @@ public class Post {
     private String name;
     private String description;
     private String link;
-    private String date;
+    private String dateCreated;
+
+    public Post() {
+    }
+
+    public Post(int id, String name, String description, String link, String dateCreated) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.link = link;
+        this.dateCreated = dateCreated;
+    }
 
     public String getDescription() {
         return description;
@@ -25,12 +36,12 @@ public class Post {
         return this;
     }
 
-    public String getDate() {
-        return date;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public Post setDate(String date) {
-        this.date = date;
+    public Post setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
         return this;
     }
 
@@ -59,7 +70,7 @@ public class Post {
                 + ", name='" + name + '\''
                 + ", description='" + description + '\''
                 + ", link='" + link + '\''
-                + ", date='" + date + '\''
+                + ", dateCreated='" + dateCreated + '\''
                 + '}';
     }
 }
