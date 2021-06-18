@@ -12,22 +12,14 @@ public class PsqlStore implements Store, AutoCloseable {
     private final Connection cnn;
 
     public PsqlStore(Properties cfg) throws Exception {
-        try {
+        Connection cnn =
+                DriverManager.getConnection(cfg.getProperty("url"),
+                        cfg.getProperty("username"),
+                        cfg.getProperty("password"));
             Class.forName(cfg.getProperty("driver-class-name"));
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-         cnn = DriverManager.getConnection(cfg.getProperty("url"),
-                 cfg.getProperty("username"),
-                 cfg.getProperty("password"));
-    }
+            this.cnn = cnn;
+            createTable(this.cnn);
 
-    private static void tryStatementBlock(String sql, Connection connection) {
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private static void createTable(Connection cnn) {
@@ -38,7 +30,11 @@ public class PsqlStore implements Store, AutoCloseable {
                + "link varchar(255) NOT NULL\n"
                + "      CONSTRAINT name_unique UNIQUE,\n"
                + "dateCreated varchar(255));";
-        tryStatementBlock(createTableSQL, cnn);
+        try (Statement statement = cnn.createStatement()) {
+            statement.execute(createTableSQL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static Properties getProperties(String filePath) {
@@ -112,9 +108,13 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
+        try {
         if (cnn != null) {
             cnn.close();
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -133,7 +133,6 @@ public class PsqlStore implements Store, AutoCloseable {
         store.drop();
         createTable(store.cnn);
         Post testPost = new Post(999, "Test", "Test", "Test", "Test");
-
         store.save(testPost);
         System.out.println(store.getAll() + " --- getAll");
         System.out.println(store.findById("1") + " --- findById");

@@ -19,7 +19,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
             "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"));
 
     @Override
-    public LocalDateTime parse(String parse) {
+    public LocalDateTime parseDataTime(String parse) {
         LocalDateTime time;
         String[] parseArr = parse.split(", ");
         if (parseArr[0].equals("вчера")) {
@@ -50,7 +50,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
             Element t = time.get(i + 1).child(5);
             String construct = href.attr("href") + System.lineSeparator()
                     + href.text() + System.lineSeparator()
-                    + parser.parse(t.text()).format(formatter);
+                    + parser.parseDataTime(t.text()).format(formatter);
             outText.add(construct);
         }
         return outText;

@@ -71,15 +71,16 @@ public class SqlRuParse implements Parse {
                     .select("table.msgTable:nth-child(3) > "
                             + "tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text());
             post.setName(document.select(".messageHeader").get(0).text());
-            post.setDateCreated(document
-                    .select("table.msgTable:nth-child(3) > tbody:nth-child(1) "
-                            + "> tr:nth-child(3) > td:nth-child(1)").text().substring(0, 15));
             post.setLink(link);
             post.setId(1);
+            String[] textForExplitDate = document
+                    .select(".msgFooter").get(0).text().split(", ");
+            String expliteDate = textForExplitDate[0];
+            String expliteTime = textForExplitDate[1].substring(0, 5);
+            post.setDateCreated(expliteDate + ", " + expliteTime);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(post.toString());
         return post;
     }
 }
