@@ -13,10 +13,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class SqlRuDateTimeParser implements DateTimeParser {
+
+    private static final List<String> MONTHS
+            = new ArrayList<>(Arrays.asList("янв", "фев", "мар",
+            "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"));
+
     @Override
     public LocalDateTime parse(String parse) {
-        List<String> months = new ArrayList<>(Arrays.asList("янв", "фев", "мар",
-                "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"));
         LocalDateTime time;
         String[] parseArr = parse.split(", ");
         if (parseArr[0].equals("вчера")) {
@@ -27,7 +30,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
             } else {
                 String[] dateRus = parseArr[0].split(" ");
                 int year = Integer.parseInt(dateRus[2]);
-                int monthRusToInt = months.indexOf(dateRus[1]) + 1;
+                int monthRusToInt = MONTHS.indexOf(dateRus[1]) + 1;
                 int day = Integer.parseInt(dateRus[0]);
                 LocalDate date = LocalDate.of(year, monthRusToInt, day);
                 time = LocalDateTime.of(date, LocalTime.parse(parseArr[1]));
