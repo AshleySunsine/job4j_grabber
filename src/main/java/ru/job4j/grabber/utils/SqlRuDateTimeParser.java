@@ -62,7 +62,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         post.setDescription(document
                 .select("table.msgTable:nth-child(3) > "
                         + "tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text());
-        post.setName(document.select("#id22298685").text());
+        post.setName(document.select(".messageHeader").get(0).text());
         post.setDate(document
                 .select("table.msgTable:nth-child(3) > tbody:nth-child(1) "
                         + "> tr:nth-child(3) > td:nth-child(1)").text().substring(0, 15));
