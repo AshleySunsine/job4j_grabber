@@ -12,7 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class SqlRuDateTimeParser implements DateTimeParser {
+public class SqlRuDateTimeParserInterface implements DateTimeParserInterface {
 
     private static final List<String> MONTHS
             = new ArrayList<>(Arrays.asList("янв", "фев", "мар",
@@ -39,7 +39,8 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         return time;
     }
 
-    public List<String> parsePage(String page, SqlRuDateTimeParser parser) throws Exception {
+    public List<String> parsePage(String page, SqlRuDateTimeParserInterface parser)
+            throws Exception {
         List<String> outText = new ArrayList<>();
         Document document = Jsoup.connect(page).get();
         Elements time = document.select(".forumtable").select("tr");
@@ -63,9 +64,9 @@ public class SqlRuDateTimeParser implements DateTimeParser {
                 .select("table.msgTable:nth-child(3) > "
                         + "tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)").text());
         post.setName(document.select(".messageHeader").get(0).text());
-        post.setDateCreated(document
+        post.setDateCreated(parseDataTime(document
                 .select("table.msgTable:nth-child(3) > tbody:nth-child(1) "
-                        + "> tr:nth-child(3) > td:nth-child(1)").text().substring(0, 15));
+                        + "> tr:nth-child(3) > td:nth-child(1)").text().substring(0, 15)));
         post.setLink(link);
         post.setId(1);
         System.out.println(post.toString());
@@ -73,7 +74,7 @@ public class SqlRuDateTimeParser implements DateTimeParser {
     }
 
     public static void main(String[] args) throws Exception {
-        SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
+        SqlRuDateTimeParserInterface parser = new SqlRuDateTimeParserInterface();
         for (int i = 1; i < 6; i++) {
             String page = String.format("https://www.sql.ru/forum/job-offers/%d", i);
             System.out.println(page);

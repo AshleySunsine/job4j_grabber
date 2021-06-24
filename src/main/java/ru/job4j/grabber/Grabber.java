@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
+import ru.job4j.grabber.utils.DateTimeParser;
 import ru.job4j.grabber.utils.Post;
 
 import static org.quartz.JobBuilder.newJob;
@@ -116,11 +117,13 @@ public class Grabber implements Grab {
         вот это вот нужно запускать в отдельный поток.
         Этого я делать пока не умею.
          */
+        // store.drop(); -- Удалить существующую таблицу,
+        // чтобы не было накладок по уникальным значениям
         Grabber grab = new Grabber();
         grab.cfg();
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
-        grab.init(new SqlRuParse(), store, scheduler);
+        grab.init(new SqlRuParse(new DateTimeParser()), store, scheduler);
         grab.web(store);
     }
 }

@@ -4,38 +4,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.job4j.grabber.utils.DateTimeParser;
 import ru.job4j.grabber.utils.Post;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SqlRuParse implements Parse {
-    private static final List<String> MONTHS
-            = new ArrayList<>(Arrays.asList("янв", "фев", "мар",
-            "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"));
 
-    private static LocalDateTime parseDate(String dateText) {
-        LocalDateTime time;
-        String[] parseArr = dateText.split(", ");
-        if (parseArr[0].equals("вчера")) {
-            time = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.parse(parseArr[1]));
-        } else {
-            if (parseArr[0].equals("сегодня")) {
-                time = LocalDateTime.of(LocalDate.now(), LocalTime.parse(parseArr[1]));
-            } else {
-                String[] dateRus = parseArr[0].split(" ");
-                int year = Integer.parseInt(dateRus[2]);
-                int monthRusToInt = MONTHS.indexOf(dateRus[1]) + 1;
-                int day = Integer.parseInt(dateRus[0]);
-                LocalDate date = LocalDate.of(year, monthRusToInt, day);
-                time = LocalDateTime.of(date, LocalTime.parse(parseArr[1]));
-            }
-        }
-        return time;
+    private final DateTimeParser dateTimeParser;
+
+    public SqlRuParse(DateTimeParser dateTimeParser) {
+        this.dateTimeParser = dateTimeParser;
     }
 
     @Override
@@ -45,15 +25,13 @@ public class SqlRuParse implements Parse {
             Document document = Jsoup.connect(link).get();
             Elements timeElements = document.select(".forumtable").select("tr");
             Elements row = document.select(".postslisttopic");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yy, HH:mm");
             for (int i = 0; i < row.size(); i++) {
                 Element href = row.get(i).child(0);
                 Element time = timeElements.get(i + 1).child(5);
                 Post post = new Post();
                 post.setLink(href.attr("href"));
                 post.setName(href.text());
-                post.setDateCreated(parseDate(time.text())
-                        .format(formatter));
+                post.setDateCreated(dateTimeParser.parseDataTime(time.text()));
                 outPosts.add(post);
             }
         } catch (Exception e) {
@@ -75,9 +53,13 @@ public class SqlRuParse implements Parse {
             post.setId(1);
             String[] textForExplitDate = document
                     .select(".msgFooter").get(0).text().split(", ");
-            String expliteDate = textForExplitDate[0];
-            String expliteTime = textForExplitDate[1].substring(0, 5);
-            post.setDateCreated(expliteDate + ", " + expliteTime);
+            String expliteDateTime = textForExplitDate[0]
+                    + ", "
+                    + textForExplitDate[1].substring(0, 5);
+
+            LocalDateTime expliteDataTime =
+                    dateTimeParser.parseDataTime(expliteDateTime);
+            post.setDateCreated(expliteDataTime);
         } catch (Exception e) {
             e.printStackTrace();
         }

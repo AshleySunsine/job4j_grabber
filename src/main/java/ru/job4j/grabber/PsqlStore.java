@@ -3,6 +3,7 @@ package ru.job4j.grabber;
 import ru.job4j.grabber.utils.Post;
 import java.io.InputStream;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -29,7 +30,7 @@ public class PsqlStore implements Store, AutoCloseable {
                + "description text,\n"
                + "link varchar(255) NOT NULL\n"
                + "      CONSTRAINT name_unique UNIQUE,\n"
-               + "dateCreated varchar(255));";
+               + "dateCreated timestamp);";
         try (Statement statement = cnn.createStatement()) {
             statement.execute(createTableSQL);
         } catch (Exception e) {
@@ -56,7 +57,9 @@ public class PsqlStore implements Store, AutoCloseable {
             preparedStatement.setString(1, post.getName());
             preparedStatement.setString(2, post.getDescription());
             preparedStatement.setString(3, post.getLink());
-            preparedStatement.setString(4, post.getDateCreated());
+            preparedStatement.setTimestamp(4,
+                    Timestamp.valueOf(post.getDateCreated())
+                    );
             int rows = preparedStatement.executeUpdate();
             System.out.println("rows added: " + rows);
         } catch (Exception e) {
@@ -76,7 +79,7 @@ public class PsqlStore implements Store, AutoCloseable {
                         set.getString("name"),
                         set.getString("description"),
                         set.getString("link"),
-                        set.getString("dateCreated")
+                        set.getTimestamp("dateCreated").toLocalDateTime()
                 );
                 posts.add(post);
             }
@@ -99,7 +102,7 @@ public class PsqlStore implements Store, AutoCloseable {
                     set.getString("name"),
                     set.getString("description"),
                     set.getString("link"),
-                    set.getString("dateCreated")
+                    set.getTimestamp("dateCreated").toLocalDateTime()
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +121,7 @@ public class PsqlStore implements Store, AutoCloseable {
         }
     }
 
-    private void drop() {
+    public void drop() {
         String sql = "DROP TABLE IF EXISTS post";
         try (Statement statement = cnn.createStatement()) {
            statement.execute(sql);
@@ -132,7 +135,7 @@ public class PsqlStore implements Store, AutoCloseable {
         PsqlStore store = new PsqlStore(properties);
         store.drop();
         createTable(store.cnn);
-        Post testPost = new Post(999, "Test", "Test", "Test", "Test");
+        Post testPost = new Post(999, "Test", "Test", "Test", LocalDateTime.now());
         store.save(testPost);
         System.out.println(store.getAll() + " --- getAll");
         System.out.println(store.findById("1") + " --- findById");
