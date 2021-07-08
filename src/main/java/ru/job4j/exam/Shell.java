@@ -11,6 +11,12 @@ public class Shell {
 
     private void cdAdder(String[] items) {
         for (int i = 0; i < items.length; i++) {
+            if (items[i].equals("..")) {
+                if (indexOfPath > 0) {
+                    pathArr.remove(indexOfPath - 1);
+                    indexOfPath--;
+                }
+            }
             if (i == 0) {
                 continue;
             }
@@ -21,22 +27,15 @@ public class Shell {
 
     public void cd(String path) {
         String[] paths = path.split("/");
-        if (path.startsWith("/")) {
+        if (path.startsWith("/") || path.startsWith("..")) {
             pathArr.removeAll(pathArr);
             indexOfPath = 0;
             cdAdder(paths);
-        } else {
-            if (path.startsWith("..")) {
-                pathArr.remove(indexOfPath - 1);
-                indexOfPath--;
-                cdAdder(paths);
-            } else {
+           } else {
                 pathArr.add(path);
                 indexOfPath++;
             }
         }
-
-    }
 
     public String pwd() {
         StringJoiner stringJoiner = new StringJoiner("/");
