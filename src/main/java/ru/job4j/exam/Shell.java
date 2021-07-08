@@ -6,18 +6,47 @@ import java.util.StringJoiner;
 
 public class Shell {
 
-    private int pathCount = 0;
+    private int indexOfPath = 0;
     private List<String> pathArr = new LinkedList<>();
 
-    public void cd(String path) {
-        if (path.startsWith("/")) {
-            for (var p : path.split("/")) {
-                pathArr.add(p);
+    private void cdAdder(String[] items) {
+        for (int i = 0; i < items.length; i++) {
+            if (i == 0) {
+                continue;
             }
+            pathArr.add(items[i]);
+            indexOfPath++;
         }
     }
 
+    public void cd(String path) {
+        String[] paths = path.split("/");
+        if (path.startsWith("/")) {
+            pathArr.removeAll(pathArr);
+            indexOfPath = 0;
+            cdAdder(paths);
+        } else {
+            if (path.startsWith("..")) {
+                pathArr.remove(indexOfPath - 1);
+                indexOfPath--;
+                cdAdder(paths);
+            } else {
+                pathArr.add(path);
+                indexOfPath++;
+            }
+        }
+
+    }
+
     public String pwd() {
-        return "/";
+        StringJoiner stringJoiner = new StringJoiner("/");
+        if (pathArr.isEmpty()) {
+            stringJoiner.add("");
+        }
+        stringJoiner.add("");
+        for (var i : pathArr) {
+            stringJoiner.add(i);
+        }
+        return stringJoiner.toString();
     }
 }
