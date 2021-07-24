@@ -1,0 +1,31 @@
+CREATE TABLE company
+(
+    id integer NOT NULL,
+    name character varying,
+    CONSTRAINT company_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE person
+(
+    id integer NOT NULL,
+    name character varying,
+    company_id integer references company(id),
+    CONSTRAINT person_pkey PRIMARY KEY (id)
+);
+
+insert into company(id, name) values (1, 'Co1');
+insert into company(id, name) values (2, 'Co2');
+insert into company(id, name) values (3, 'Co3');
+insert into company(id, name) values (4, 'Co4');
+insert into company(id, name) values (5, 'Co5');
+
+insert into person(id, name, company_id) values (1, 'Zo1', 1);
+insert into person(id, name, company_id) values (2, 'Zo2', 5);
+insert into person(id, name, company_id) values (3, 'Zo3',3);
+insert into person(id, name, company_id) values (4, 'Zo4',2);
+insert into person(id, name, company_id) values (5, 'Zo5',5);
+insert into person(id, name, company_id) values (6, 'Zo6',2);
+insert into person(id, name, company_id) values (7, 'Zo7',4);
+
+1)select per.id, per.name, company.name from (select * from person where not company_id=5) as per left join company ON per.company_id=company.id;
+2) SELECT company.name, count(person.company_id) AS amount FROM person LEFT JOIN company ON person.company_id=company.id GROUP BY company.name ORDER BY amount DESC LIMIT 1
