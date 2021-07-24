@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.lang.ref.SoftReference;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class DirFileCache extends AbstractCache<String, String> {
 
@@ -19,15 +21,9 @@ public class DirFileCache extends AbstractCache<String, String> {
 
     @Override
     protected String load(String key) {
-        try (BufferedReader reader = new BufferedReader(
-                new FileReader(cachingDir + File.separator + key))) {
-            String line;
-            StringBuilder builder = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-                builder.append(System.lineSeparator());
-            }
-            this.cache.put(key, new SoftReference<>(builder.toString()));
+        try {
+            String line = Files.readString(Path.of(cachingDir + File.separator + key));
+            this.cache.put(key, new SoftReference<>(line));
             return cache.get(key).get();
         } catch (Exception e) {
             e.printStackTrace();

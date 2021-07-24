@@ -33,6 +33,7 @@ public class Emulator {
     }
 
     public void getFromCache(String key) {
+
         System.out.println(dirFileCache.get(key));
     }
 
