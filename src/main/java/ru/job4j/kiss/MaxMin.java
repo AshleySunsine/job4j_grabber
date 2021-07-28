@@ -1,43 +1,38 @@
 package ru.job4j.kiss;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MaxMin {
-    public <T> T max(List<T> value, Comparator<T> comparator) {
-        List<T> list = this.sort(value, comparator);
-        if (list != null && !list.isEmpty()) {
-            int maxIndex = list.size() - 1;
-            return list.get(maxIndex);
+    private <T> Map<Boolean, T> maxMin(List<T> value, Comparator<T> comparator) {
+        if (!value.isEmpty()) {
+            T tempMax = value.get(0);
+            T tempMin = value.get(0);
+            Map<Boolean, T> mapIsMax = new HashMap<>();
+            for (var item : value) {
+                if (comparator.compare(tempMax, item) < 0) {
+                    tempMax = item;
+                }
+                if (comparator.compare(tempMin, item) > 0) {
+                    tempMax = item;
+                }
+            }
+            mapIsMax.put(true, tempMax);
+            mapIsMax.put(false, tempMin);
+            return mapIsMax;
         }
         return null;
+    }
+
+    public <T> T max(List<T> value, Comparator<T> comparator) {
+        T max = maxMin(value, comparator).get(true);
+        return max;
     }
 
     public <T> T min(List<T> value, Comparator<T> comparator) {
-        List<T> list = this.sort(value, comparator);
-        if (list != null && !list.isEmpty()) {
-            return list.get(0);
-        }
-        return null;
-    }
-
-    private <T> List<T> sort(List<T> value, Comparator<T> comparator) {
-        boolean needIteration = true;
-        while (needIteration) {
-            needIteration = false;
-            for (int i = 1; i < value.size(); i++) {
-                if (comparator.compare(value.get(i), value.get(i - 1)) < 0) {
-                    swap(value, i, i - 1);
-                    needIteration = true;
-                }
-            }
-        }
-        return value;
-    }
-
-    private <T> void swap(List<T> array, int ind1, int ind2) {
-        T tmp = array.get(ind1);
-        array.set(ind1, array.get(ind2));
-        array.set(ind2, tmp);
+        T min = maxMin( value, comparator).get(false);
+        return min;
     }
 }
