@@ -13,16 +13,11 @@ public abstract class AbstractCache<K, V> {
     }
 
     public V get(K key) {
-        V item = cache.get(key).get();
+        V item = load(key);
         if (item == null) {
-            this.load(key);
-            return this.get(key);
+            put(key, item);
         }
-        if (cache.containsKey(key)) {
-            return item;
-        }
-        this.load(key);
-        return this.get(key);
+        return item;
     }
 
     protected abstract V load(K key);
