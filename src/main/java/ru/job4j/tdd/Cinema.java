@@ -10,5 +10,10 @@ public interface Cinema {
 
     Ticket buy(Account account, int row, int column, Calendar date);
 
-    void add(Session session);
+    boolean placeValidate(int row, int column, Calendar date);
+
+    boolean allPlacesValidate(Calendar date);
+
+    boolean add(Session session);
+
 }

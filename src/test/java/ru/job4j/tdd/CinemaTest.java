@@ -3,6 +3,7 @@ package ru.job4j.tdd;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class CinemaTest {
 
-/*    @Test
+   @Test
     public void buy() {
         Account account = new AccountCinema();
         Cinema cinema = new Cinema3D();
@@ -38,21 +39,41 @@ public class CinemaTest {
         assertThat(sessions.get(0), is(session));
     }
 
-    /*
-    Тест на добавление сеанса, когда время для сеансов кончилось.
-    Все занято.
-    Для этого нам нужено, чтобы метод Cinema.add() возвращал true или false
-    в зависимости удачно добавился сеанс или нет.
-     */
+    @Test
+    public void addWhenNoTime() {
+        Cinema cinema = new Cinema3D();
+        Session session = new Session3D();
+        boolean ex = cinema.add(session);
+        Assert.assertFalse(ex);
+    }
 
-           /*
-    Тест на покупку билетов. Если место уже занято.
-    Нужно добавить соответствующий метод для проверки.
-     */
+    @Test
+    public void whenPlaceIsNotEmpty() {
+        Account account = new AccountCinema();
+        Cinema cinema = new Cinema3D();
+        Calendar date = Calendar.getInstance();
+        date.set(2020, 10, 10, 23, 00);
+        Ticket ticket = cinema.buy(account, 1, 1, date);
+        boolean validate = cinema.placeValidate(1, 1, date);
+        Assert.assertFalse(validate);
+    }
 
-               /*
-    Тест на покупку билетов. Если свободных мест нет.
-    Нужно добавить соответствующий метод для проверки.
-     */
+    @Test
+    public void whenCinemaIsFull() {
+        Account account = new AccountCinema();
+        Cinema cinema = new Cinema3D();
+        Calendar date = Calendar.getInstance();
+        date.set(2020, 10, 10, 23, 00);
+        Ticket ticket = cinema.buy(account, 1, 1, date);
+        /*
+        Мы должны симитировать полностью заполненый кинотеатр.
+        Т.е прогнать cinema.buy() по всем местам.
+        Использовать циклы в тестах - дурной тон.
+        Вручную забивать каждое место - этот тон еще дурнее.
+        Как быть?
+         */
+        boolean validate = cinema.allPlacesValidate(date);
+        Assert.assertFalse(validate);
+    }
 
 }
