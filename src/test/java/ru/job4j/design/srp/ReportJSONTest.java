@@ -22,12 +22,11 @@ public class  ReportJSONTest {
         store.add(worker);
         Report engine = new ReportJSON(store);
         StringBuilder expect = new StringBuilder()
-                       .append("{\"name\":\"Ivan\",\"hired\":")
+                       .append("[{\"name\":\"Ivan\",\"hired\":")
                        .append(gson.toJson(worker.getHired()))
                        .append(",\"fired\":")
                        .append(gson.toJson(worker.getFired()))
-                       .append(",\"salary\":100.0};")
-                       .append(System.lineSeparator());
+                       .append(",\"salary\":100.0}]");
         assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 }
