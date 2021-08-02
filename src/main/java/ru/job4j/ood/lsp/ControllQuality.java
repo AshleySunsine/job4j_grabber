@@ -43,6 +43,11 @@ public class ControllQuality implements FoodController {
     }
 
     @Override
+    public void addFood(Food food) {
+        sortFood(List.of(food));
+    }
+
+    @Override
     public void sortFood(List<Food> foodList) {
         for (var conteiner : containers) {
             List<Food> foods = conteiner.getFoodList();

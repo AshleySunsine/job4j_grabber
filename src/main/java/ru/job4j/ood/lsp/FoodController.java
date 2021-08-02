@@ -8,6 +8,8 @@ public interface FoodController {
 
     void sortFood(List<Food> foodList);
 
+    void addFood(Food food);
+
     void resortFood();
 
     void showFoodState();
