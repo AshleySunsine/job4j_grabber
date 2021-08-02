@@ -13,5 +13,12 @@ public class MainClass {
         for (var menu : menus) {
             menu.showMenu();
         }
+
+        String runMenu = "Point 1.1.2";
+         for (var menu : menus) {
+             if (menu.getName().equals(runMenu)) {
+                 menu.run();
+             }
+         }
     }
 }

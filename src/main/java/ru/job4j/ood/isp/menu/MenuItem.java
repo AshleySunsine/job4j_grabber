@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 abstract class MenuItem {
-    private int subMenuNumber;
     private int level = 1;
     private String name;
     private List<MenuItem> listSubMenu = new ArrayList<>();
@@ -18,11 +17,7 @@ abstract class MenuItem {
         this.listSubMenu = listSubMenu;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public MenuItem setLevel(int level) {
+    protected MenuItem setLevel(int level) {
         this.level = level;
         return this;
     }
@@ -32,8 +27,8 @@ abstract class MenuItem {
     }
 
     public void showMenu() {
-        System.out.print("---".repeat(this.level - 1));
-        System.out.println(" " + this.name + " (" + this.level + ")");
+        System.out.print("---".repeat(this.level - 1) + ">");
+        System.out.println(this.name + " (level " + this.level + ")");
     }
 
     public List<MenuItem> getMenu() {
@@ -54,5 +49,9 @@ abstract class MenuItem {
             }
         }
         return listing;
+    }
+
+    public void run() {
+        System.out.println(this.name + " !!!!!!!");
     }
 }

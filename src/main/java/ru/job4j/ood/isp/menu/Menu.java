@@ -25,4 +25,9 @@ public class Menu extends MenuItem {
     public List<MenuItem> getMenu() {
         return super.getMenu();
     }
+
+    @Override
+    public void run() {
+        super.run();
+    }
 }
