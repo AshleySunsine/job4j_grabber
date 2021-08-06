@@ -24,26 +24,24 @@ public class ParkControllerTest {
 
     @Test
     public void inputHardCar() {
-        Park park = new ParkOne(2, 1);
+        Park park = new ParkOne(0, 1);
         ParkController controller = new SimpleParkController(park);
         Car hard = new HardCar(2);
         controller.inputCar(hard);
         Map<String, Integer> expect = new HashMap<>();
-        expect.put("Light", 2);
-        expect.put("Hard", 0);
+        expect.put("Hard", 1);
         Assert.assertEquals(controller.getFreePlace(), expect);
     }
 
     @Test
     public void inputHardToLightCar() {
-        Park park = new ParkOne(2, 1);
+        Park park = new ParkOne(2, 0);
         ParkController controller = new SimpleParkController(park);
         Car hard = new HardCar(2);
         controller.inputCar(hard);
         controller.inputCar(hard);
         Map<String, Integer> expect = new HashMap<>();
-        expect.put("Light", 0);
-        expect.put("Hard", 0);
+        expect.put("Light", 2);
         Assert.assertEquals(controller.getFreePlace(), expect);
     }
 
