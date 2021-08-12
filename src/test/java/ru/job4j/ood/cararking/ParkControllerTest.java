@@ -1,6 +1,5 @@
 package ru.job4j.ood.cararking;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Test;
 import java.util.HashMap;
@@ -19,37 +18,39 @@ public class ParkControllerTest {
         Map<String, Integer> expect = new HashMap<>();
         expect.put("Light", 0);
         expect.put("Hard", 1);
-        Assert.assertEquals(controller.getFreePlace(), expect);
+        Assert.assertEquals(expect, controller.getFreePlace());
     }
 
     @Test
     public void inputHardCar() {
         Park park = new ParkOne(0, 1);
         ParkController controller = new SimpleParkController(park);
-        Car hard = new HardCar(2);
+        Car hard = new HardCar("HardOne", 2);
         controller.inputCar(hard);
         Map<String, Integer> expect = new HashMap<>();
-        expect.put("Hard", 1);
-        Assert.assertEquals(controller.getFreePlace(), expect);
+        expect.put("Hard", 0);
+        expect.put("Light", 0);
+        Assert.assertEquals(expect, controller.getFreePlace());
     }
 
     @Test
     public void inputHardToLightCar() {
         Park park = new ParkOne(2, 0);
         ParkController controller = new SimpleParkController(park);
-        Car hard = new HardCar(2);
+        Car hard = new HardCar("HardOne", 2);
         controller.inputCar(hard);
         controller.inputCar(hard);
         Map<String, Integer> expect = new HashMap<>();
-        expect.put("Light", 2);
-        Assert.assertEquals(controller.getFreePlace(), expect);
+        expect.put("Hard", 0);
+        expect.put("Light", 0);
+        Assert.assertEquals(expect, controller.getFreePlace());
     }
 
     @Test
     public void inputHardToLightCarWithoutPlace() {
         Park park = new ParkOne(0, 1);
         ParkController controller = new SimpleParkController(park);
-        Car hard = new HardCar(2);
+        Car hard = new HardCar("HardOne", 2);
         controller.inputCar(hard);
         boolean expect = controller.inputCar(hard);
         Assert.assertFalse(expect);
@@ -75,7 +76,7 @@ public class ParkControllerTest {
         Map<String, Integer> expect = new HashMap<>();
         expect.put("Light", 0);
         expect.put("Hard", 0);
-        Assert.assertEquals(controller.getFreePlace(), expect);
+        Assert.assertEquals(expect, controller.getFreePlace());
     }
 
     @Test
@@ -85,7 +86,7 @@ public class ParkControllerTest {
         Car light = new LightCar("LightOne");
         controller.inputCar(light);
         Car expect = new LightCar("LightOne");
-        Car fact = controller.getCar("LightOne");
-        Assert.assertEquals(fact, expect);
+        Car car = controller.getCar("LightOne").get();
+        Assert.assertEquals(expect.getName(), car.getName());
     }
 }

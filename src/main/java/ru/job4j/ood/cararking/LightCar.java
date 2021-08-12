@@ -17,6 +17,6 @@ public class LightCar implements Car {
 
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
 }

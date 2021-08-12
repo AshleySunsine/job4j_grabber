@@ -1,6 +1,7 @@
 package ru.job4j.ood.cararking;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class SimpleParkController implements ParkController {
     private final Park park;
@@ -11,16 +12,16 @@ public class SimpleParkController implements ParkController {
 
     @Override
     public boolean inputCar(Car car) {
-        return false;
+        return park.inputCar(car);
     }
 
     @Override
-    public Car getCar(String name) {
-        return null;
+    public Optional<Car> getCar(String name) {
+        return park.getCar(name);
     }
 
     @Override
     public Map<String, Integer> getFreePlace() {
-        return null;
+        return park.getFreePlace();
     }
 }

@@ -2,18 +2,24 @@ package ru.job4j.ood.cararking;
 
 public class HardCar implements Car {
     private int size;
+    private String name;
 
-    public HardCar(int size) {
-        this.size = size;
+    public HardCar(String name, int size) {
+        if (size >= 2) {
+            this.size = size;
+            this.name = name;
+        } else {
+            throw new IllegalArgumentException("Размер должен быть больше двух!");
+        }
     }
 
     @Override
     public int getSize() {
-        return 0;
+        return this.size;
     }
 
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
 }
